@@ -12,11 +12,17 @@ const app = express();
     
 // });
 app.get("/test",(req,res) =>{
+        console.log(req.query);
+    
     res.send({firstname: "dikshya" , secondname: "soni"});
     
 });
-app.post("/test",(req,res) =>{
+app.post("/test/:testid/:name/:password",(req,res) =>{
+    console.log(req.params);
+
+
     res.send("succestfully posted");
+
 });
 app.delete("/test",(req,res) =>{
     res.send("seuccesfully deleted");
