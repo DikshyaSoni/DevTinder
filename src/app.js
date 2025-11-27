@@ -1,33 +1,20 @@
 
-const express= require ('express')
+const express= require ('express');
+
+
+  const connectdb = require("./config/database");
+connectdb();
 
 const app = express();
+connectdb()
+    .then( ()=>{
+        console.log("database connected succesfully")
 
-
-
-app .use("/",(err,req,res,next) => {
-    if(err){
-        res.send("soething went wrong")
-    }
-});
-app.get("/admin",(req,res) => {
-    // try{
-        throw new Error("dhgj");
-
-        res.send("admin data");
-    // }
-    // catch(err){
-// res.status(401).send("some error  contact support team");
-    // }
-
+        app.listen(4000 , ()=>{
+            console.log("succesfuly created a server on port 4000");
+        });
+    })
+     .catch(err => {
+    console.error("database cannot be connected");
     
-});
-app .use("/",(err,req,res,next) => {
-    if(err){
-        res.send("soething wrong")
-    }
-});
-
-app.listen(4000 , ()=>{
-    console.log("succesfuly created a server on port 4000");
-});
+  });
