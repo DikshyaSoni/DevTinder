@@ -57,7 +57,7 @@ app.get ("/user", async (req,res) => {
 app.get("/feed",async (req,res) => {
   try{
 const users = await user.find({})
-res.send(users)
+res.send("GOT FEED");
   }
     catch (err) {
     res.status(401).send("error saving user" + err.message);
@@ -65,6 +65,16 @@ res.send(users)
 });
 
 
+app.delete("/user", async (req,res) => {
+  const userId = req.body.userId;
+  try{
+    const user = await User.findByIdAndDelete(userId);
+    res.send("user deleted");
+  }
+    catch (err) {
+    res.status(401).send("error saving user" + err.message);
+  }
+});
 connectdb()
   .then(() => {
     console.log("database connected succesfully");
