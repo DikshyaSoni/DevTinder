@@ -64,7 +64,7 @@ res.send("GOT FEED");
   }
 });
 
-
+// delete user from the data
 app.delete("/user", async (req,res) => {
   const userId = req.body.userId;
   try{
@@ -75,6 +75,37 @@ app.delete("/user", async (req,res) => {
     res.status(401).send("error saving user" + err.message);
   }
 });
+
+// update data of the user THROUGH ID 
+app.patch("/user",async (req,res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try{
+    const user = await User.findByIdAndUpdate(userId,data);
+    res.send("uppdated succesffuly");
+  }
+    catch (err) {
+    res.status(401).send("error saving user" );
+  }
+});
+
+
+// update data of the user THROUGH EMAIL ID
+app.patch("/user",async (req,res) => {
+  const emailId = req.body.emailId;
+  const data = req.body;
+  try{
+    const user = await User.findOneAndUpdate(emailId,data);
+    res.send("uppdated succesffuly");
+  }
+    catch (err) {
+    res.status(401).send("error saving user" );
+  }
+});
+
+
+
+
 connectdb()
   .then(() => {
     console.log("database connected succesfully");
