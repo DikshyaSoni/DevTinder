@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      validate(value){
+      if(!validator.isEmail(value)){
+        throw new Error ("Email id not valid");
+      }
+    }
     },
 
     password: {
@@ -43,11 +48,7 @@ const userSchema = new mongoose.Schema(
 
     skills: {
       type: [String],
-      validate(value){
-          if (value.length > 10) {
-      throw new Error("Skills cannot be more than 10");
-        }
-      },
+    
     },
 
     gender: {
