@@ -22,6 +22,8 @@ app.post("/signup", async (req, res) => {
   catch (err) {
     res.status(401).send("error saving user" + err.message);
   }
+  console.log(doc.createdAt); 
+console.log(doc.updatedAt);
 });
 // get user by email
 
