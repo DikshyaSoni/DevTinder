@@ -1,31 +1,71 @@
 
 const express = require("express");
 const app = express();
-
 const connectdb = require("./config/database");
-
 const User = require("./models/user");
 const user = require("./models/user");
+const{validateSignUpData} = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 
 app.use(express.json());
 app.post("/signup", async (req, res) => {
   console.log(req.body);
-  // creating a new instnce of a user model
-  const user = new User(req.body);
   try {
+// validation of data
+validateSignUpData(req);
+// encrypting passwords
+const {firstName,lastName,emailId,password} = req.body;
+const passwordHash = await bcrypt.hash(password,10);
+console.log(passwordHash);
+const user =  new User ({
+  firstName,
+  lastName,
+  emailId,
+  password : passwordHash,
+
+
+});
+// creating  new instance of a  user model
+
 
 
     await user.save();
     res.send("user signup succesfull");
   }
   catch (err) {
-    res.status(401).send("error saving user" + err.message);
+    res.status(401).send("error " + err.message);
   }
   console.log(doc.createdAt); 
 console.log(doc.updatedAt);
 });
 // get user by email
+app.post("/login",async(req,res) => {
+try{
+   const{ emailId , password} = req.body ;
+   if(!validator.isEmail(emailId)){
+           throw new Error("email not valid");
+   }
+   const user =await User.findOne({emailId:emailId});
+           if(!user){
+            throw new Error("Invalid Credentials");
+           }
+           const isPasswordValid = await bcrypt.compare(password,user.password);
+           if(!isPasswordValid){
+            throw new Error("Invalid Credentials");
+           }
+           else{
+            res.send("login succesfull");
+           }
+}
+    catch(err){
+    res.status(401).send("ERROR :  " + err.message);
+  }
+});
+
+
+
 
 app.get ("/user", async (req,res) => {
   const userEmail = req.body.emailId;
@@ -58,7 +98,7 @@ app.get ("/user", async (req,res) => {
 // FEED API - GET/feed -  get all the users from the database
 app.get("/feed",async (req,res) => {
   try{
-const users = await user.find({})
+const users = await User.find({})
 res.send("GOT FEED");
   }
     catch (err) {
