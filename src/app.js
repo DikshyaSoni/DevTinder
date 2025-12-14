@@ -7,9 +7,12 @@ const user = require("./models/user");
 const{validateSignUpData} = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
-
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.post("/signup", async (req, res) => {
   console.log(req.body);
   try {
@@ -52,11 +55,15 @@ try{
             throw new Error("Invalid Credentials");
            }
            const isPasswordValid = await bcrypt.compare(password,user.password);
-           if(!isPasswordValid){
-            throw new Error("Invalid Credentials");
-           }
-           else{
+           if(isPasswordValid){
+            
+            // create a jwt token 
+            res.cookie("token","gdhsbdsdjhnfmfbhjfhj");
             res.send("login succesfull");
+          }
+          else{
+             throw new Error("Invalid Credentials");
+        
            }
 }
     catch(err){
@@ -64,6 +71,14 @@ try{
   }
 });
 
+app.get("/profile",(req,res) => {
+  const cookies = req.cookies;
+  const{token}= cookies;
+  // validate the cookies
+  
+  console.log(cookies);
+  res.send(" reading cookies");
+})
 
 
 
