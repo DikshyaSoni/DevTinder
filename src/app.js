@@ -58,8 +58,12 @@ try{
            if(isPasswordValid){
             
             // create a jwt token 
-            res.cookie("token","gdhsbdsdjhnfmfbhjfhj");
-            res.send("login succesfull");
+
+            const token = await jwt.sign({_id:user._id}  , "Devtinder@0709") ;
+            console.log(token);
+            // add token to the cookie and send response back to the user
+            res.cookie("token",token);
+            res.send("login succesfull"); 
           }
           else{
              throw new Error("Invalid Credentials");
@@ -71,14 +75,28 @@ try{
   }
 });
 
-app.get("/profile",(req,res) => {
+app.get("/profile",async(req,res) => {
+  try{
   const cookies = req.cookies;
   const{token}= cookies;
   // validate the cookies
-  
-  console.log(cookies);
-  res.send(" reading cookies");
-})
+  if(!token){
+    throw new Error ("not valid token");
+  }
+
+   const decodedMessage = jwt.verify(token,"Devtinder@0709");
+   console.log(decodedMessage);
+   const{_id} = decodedMessage;
+   console.log("user login id is : " +  _id);
+  const user = await User.findById( _id);
+  if(!user){
+    throw new Error ("user doesnt exits");
+  }
+  res.send(user);
+  }catch(err){
+    res.status(401).send("ERROR :  " + err.message);
+  }
+});
 
 
 
