@@ -59,20 +59,24 @@ try{
             
             // create a jwt token 
 
-            const token = await jwt.sign({_id:user._id}  , "Devtinder@0709") ;
-            console.log(token);
+            const token = await jwt.sign({_id:user._id}  , "Devtinder@0709" , {expiresIn:"1d",
+             });
+        
             // add token to the cookie and send response back to the user
-            res.cookie("token",token);
+            res.cookie("token",token, {
+              expires:new Date( Date.now()+ 8*3600000),
+            });
             res.send("login succesfull"); 
-          }
+            }
           else{
              throw new Error("Invalid Credentials");
         
            }
 }
-    catch(err){
+catch(err){
     res.status(401).send("ERROR :  " + err.message);
   }
+
 });
 
 app.get("/profile", userAuth ,async(req,res) => {
