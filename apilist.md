@@ -8,7 +8,7 @@
 #ProfileRouter
    get/profile/view
    patch/profile/edit
-   patch/profile/password
+   patch/profile/password/fogetpassword api
 
 #ConnectionRequestRouter
    post/request/send/interested/:userId
