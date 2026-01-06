@@ -5,12 +5,14 @@ const connectionRequestSchema =  new mongoose.Schema(
         fromUserId :{
                    type:mongoose.Schema.Types.ObjectId,
                    required :true,
+                   ref: "User",
         },
 
         toUserId:{
 
                    type:mongoose.Schema.Types.ObjectId,
                    required : true,
+                    ref: "User", 
         },
         status : {
             type:String,
@@ -26,7 +28,7 @@ const connectionRequestSchema =  new mongoose.Schema(
     }
 );
 
-connectionRequestSchema.index({fromUserId :1, toUsserId : 1});
+connectionRequestSchema.index({fromUserId :1, toUserId : 1});
 // Use NORMAL function (not async) to get next()
 connectionRequestSchema.pre("save", function () {
   const connectionRequest = this;
@@ -36,7 +38,7 @@ connectionRequestSchema.pre("save", function () {
   throw new Error('cant send request to yourself');
   }
 });
-const connectionRequest = new mongoose.model(
-    "connectionRequest",connectionRequestSchema
+const ConnectionRequest = new mongoose.model(
+    "ConnectionRequest",connectionRequestSchema
 );
-module.exports = connectionRequest;
+module.exports = ConnectionRequest;
