@@ -59,7 +59,36 @@ catch(err){
 });
 
 
+userRouter.get("/feed",userAuth,async(req,res) => {
+try{
+    const loggedInUser = req.user;
+    const connectionRequest = await ConnectionRequest.find({
+      $or:[
+            {toUserId : loggedInUser},
+            {fromUserId : loggedInUser} 
+        ]
+    }).select("fromUserId toUserId");
+    
+    
+    
+const hideUserFromFeed = new Set();
+connectionRequest.forEach((req) => {
+    hideUserFromFeed.add(req.fromUserId.toString());
+        hideUserFromFeed.add(req.toUserId.toString());
+});
+    const users = await User.find({
+        $and: [
+            {_id:{$nin:Array.from(hideUserFromFeed)}},
+            {_id:{$ne :loggedInUser}},
+        ],
+ }).select(Safe_data);
+  res.json({ data: users });
 
+}
+catch(err){
+    res.status(400).send({mesage : err.message})
+}
+});
 
 
 
