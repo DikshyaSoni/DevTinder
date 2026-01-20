@@ -10,8 +10,12 @@ const validator = require("validator");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const {userAuth} = require ("../middleware/auth")
-
-
+const cors = require ("cors");
+ 
+app.use(cors({
+  origin :"http://localhost:5173",
+  credentials : true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
